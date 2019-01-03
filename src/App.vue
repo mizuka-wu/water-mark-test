@@ -1,25 +1,92 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+    <div><input v-model="userName" /></div>
+    <img width="100%" :src="src" />
   </div>
 </template>
+<script>
+import * as base64 from "qiniu-js/src/base64";
+// eslint-disable-next-line
+const UrlSafeBase64 = {
+  encodeToString: function(content) {
+    return base64.urlSafeBase64Encode(content);
+  }
+};
+const LOGO_WHITE = "https://assets.piaoniu.com/logo/logo_white.png";
+export default {
+  data() {
+    return {
+      width: 375,
+      bottom: 6,
+      right: 8,
+      zoom: 2,
+      userName: "我叫张家坤",
+      imageUrlBase64: UrlSafeBase64.encodeToString(LOGO_WHITE),
+      atBase64: UrlSafeBase64.encodeToString("@")
+    };
+  },
+  computed: {
+    userNameBase64() {
+      let userName = this.userName;
+      return UrlSafeBase64.encodeToString(userName);
+    },
+    src() {
+      let img =
+        "https://img.piaoniu.com//2788d1cbc95aa930eef39066184b32070505d091.jpg";
+      return img + "?" + this.ops;
+    },
+    ops() {
+      let {
+        width,
+        zoom,
+        userNameBase64,
+        right,
+        bottom,
+        atBase64,
+        userName,
+        imageUrlBase64
+      } = this;
+      let ops =
+        "imageMogr2/" +
+        "auto-orient/" + // 转正
+        "thumbnail/" +
+        width * zoom +
+        "x/" + // 最大宽度
+        "format/jpg/" + // 输出为jpg
+        "blur/1x0/" + // 仅仅宽度缩放
+        "quality/100" + // 质量75
+        "|watermark/3" +
+        // 文字
+        "/text/" +
+        userNameBase64 +
+        "/font/5b6u6L2v6ZuF6buR/fontsize/380/fill/I0ZGRkZGRg==/dissolve/100/gravity/SouthEast" + // 字体颜色灯信息
+        "/dx/" +
+        right * zoom + // 右边
+        "/dy/" +
+        bottom * zoom + // 底边
+        // @
+        "/text/" +
+        atBase64 +
+        "/font/5b6u6L2v6ZuF6buR/fontsize/440/fill/I0ZGRkZGRg==/dissolve/100/gravity/SouthEast" + // 字体颜色灯信息
+        "/dx/" +
+        Math.floor((right + userName.length * 9.5) * zoom) + // 右边
+        "/dy/" +
+        (bottom - 1) * zoom + // 底边
+        "/image" +
+        "/" +
+        imageUrlBase64 +
+        "/dissolve/100/gravity/SouthEast" +
+        "/dx/" +
+        Math.floor(((userName.length + 1) * 9.5 + right + 4) * zoom) + // 右边还要算出文字 + @ 的宽度
+        "/dy/" +
+        (bottom + 1) * zoom;
+      return ops;
+    }
+  }
+};
+</script>
 <style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-
-#nav
-  padding 30px
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
+body {
+  margin: 0;
+}
 </style>
