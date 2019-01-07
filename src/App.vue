@@ -16,6 +16,7 @@ const UrlSafeBase64 = {
 function getUserNameWidth(userName) {
   let chineseCount = 0; //汉字数量
   let uppercaseCount = 0; //大写字母数量
+  let dotCount = 0;
   let otherCount = 0; //其他数量
   let chars = userName.split(""); // toCharArray()
   chars.forEach(char => {
@@ -23,12 +24,16 @@ function getUserNameWidth(userName) {
       uppercaseCount++;
     } else if (/[\u4E00-\u9FA5]/.exec(char)) {
       chineseCount++;
+    } else if (char == ".") {
+      dotCount++;
     } else {
       otherCount++;
     }
   });
 
-  return chineseCount * 9.5 + otherCount * 5 + uppercaseCount * 6.5;
+  return (
+    chineseCount * 9.5 + otherCount * 5 + uppercaseCount * 6.1 + dotCount * 2.5
+  );
 }
 
 const LOGO_WHITE = "https://assets.piaoniu.com/logo/logo_white.png";
