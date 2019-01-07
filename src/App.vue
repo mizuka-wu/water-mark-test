@@ -12,6 +12,25 @@ const UrlSafeBase64 = {
     return base64.urlSafeBase64Encode(content);
   }
 };
+
+function getUserNameWidth(userName) {
+  let chineseCount = 0; //汉字数量
+  let uppercaseCount = 0; //大写字母数量
+  let otherCount = 0; //其他数量
+  let chars = userName.split(""); // toCharArray()
+  chars.forEach(char => {
+    if (char >= "A" && char <= "Z") {
+      uppercaseCount++;
+    } else if (/[\u4E00-\u9FA5]/.exec(char)) {
+      chineseCount++;
+    } else {
+      otherCount++;
+    }
+  });
+
+  return chineseCount * 9.5 + otherCount * 5 + uppercaseCount * 6.5;
+}
+
 const LOGO_WHITE = "https://assets.piaoniu.com/logo/logo_white.png";
 export default {
   data() {
@@ -69,7 +88,7 @@ export default {
         atBase64 +
         "/font/5b6u6L2v6ZuF6buR/fontsize/440/fill/I0ZGRkZGRg==/dissolve/100/gravity/SouthEast" + // 字体颜色灯信息
         "/dx/" +
-        Math.floor((right + userName.length * 9.5) * zoom) + // 右边
+        Math.round((right + getUserNameWidth(userName)) * zoom) + // 右边
         "/dy/" +
         (bottom - 1) * zoom + // 底边
         "/image" +
@@ -77,7 +96,7 @@ export default {
         imageUrlBase64 +
         "/dissolve/100/gravity/SouthEast" +
         "/dx/" +
-        Math.floor(((userName.length + 1) * 9.5 + right + 4) * zoom) + // 右边还要算出文字 + @ 的宽度
+        Math.round((getUserNameWidth(userName) + right + 12) * zoom) + // 右边还要算出文字 + @ 的宽度
         "/dy/" +
         (bottom + 1) * zoom;
       return ops;
