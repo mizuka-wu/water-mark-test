@@ -19,3 +19,4 @@ yarn run build
 ```
 yarn run lint
 ```
+这是一个测试水印的工具，npm run dev之后去修改水印的各种参数即可
